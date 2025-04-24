@@ -1,17 +1,40 @@
-use std::io::{Write, stdin, stdout};
+use rand::Rng;
+use std::cmp::Ordering;
+use std::io;
+use colored::*;
 
 fn main() {
-    let mut s = String::new();
-    print!("Please enter some text: ");
-    let _ = stdout().flush();
-    stdin()
-        .read_line(&mut s)
-        .expect("Did not enter a correct string");
-    if let Some('\n') = s.chars().next_back() {
-        s.pop();
+   guesser()
+}
+
+fn guesser() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1..=100);
+
+    loop {
+        println!("Please input your guess.");
+
+        let mut guess = String::new();
+
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+
+        println!("You guessed: {guess}");
+
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("{}", "Too small!".red()),
+            Ordering::Greater => println!("{}", "Too big!".red()),
+            Ordering::Equal => {
+                println!("{}","You win!".green());
+                break;
+            }
+        }
     }
-    if let Some('\r') = s.chars().next_back() {
-        s.pop();
-    }
-    println!("You typed: {}", s);
 }
