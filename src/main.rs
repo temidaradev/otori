@@ -1,40 +1,25 @@
-use rand::Rng;
-use std::cmp::Ordering;
-use std::io;
-use colored::*;
+mod level;
+mod player;
+
+use crate::level::Level;
+use crate::player::Player;
+use log::{error, info};
+use std::io::stdin;
 
 fn main() {
-   guesser()
-}
+    println!("Adınızı Giriniz");
+    let mut player_name = String::new();
 
-fn guesser() {
-    println!("Guess the number!");
-
-    let secret_number = rand::thread_rng().gen_range(1..=100);
-
-    loop {
-        println!("Please input your guess.");
-
-        let mut guess = String::new();
-
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
-
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
-
-        println!("You guessed: {guess}");
-
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("{}", "Too small!".red()),
-            Ordering::Greater => println!("{}", "Too big!".red()),
-            Ordering::Equal => {
-                println!("{}","You win!".green());
-                break;
-            }
-        }
+    let res = stdin().read_line(&mut player_name);
+    match res {
+        Ok(l) => info!("{} byte veri alındı", l),
+        Err(e) => error!("Hata: {}", e),
     }
+
+    let persival = Player {
+        name: player_name.trim(),
+        level: Level::Juniour,
+    };
+
+    print!("{:#?}", persival)
 }
