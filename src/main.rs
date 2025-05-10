@@ -1,63 +1,16 @@
-use std::io;
+use std::env;
+use std::fs;
 
 fn main() {
-    let result: f64;
+    let args: Vec<String> = env::args().collect();
 
-    println!("Enter the first number: ");
-    let x: f64 = input_parser();
+    let query = &args[1];
+    let filename = &args[2];
 
-    if f64::is_nan(x) {
-        println!("Invalid input!");
-        return;
-    }
+    println!("Searching for {}", query);
+    println!("In file {}", filename);
 
-    println!("Enter the second number: ");
-    let y: f64 = input_parser();
-
-    if f64::is_nan(y) {
-        println!("Invalid input!");
-        return;
-    }
-
-    println!("List of operators:");
-    println!("(1) Add");
-    println!("(2) Subtract");
-    println!("(3) Multiply");
-    println!("(4) Divide");
-    println!("Select the number associated with the desired operation: ");
-
-    let op: f64 = input_parser();
-
-    if f64::is_nan(op) {
-        println!("Invalid input!");
-        return;
-    }
-
-    let op: i32 = op as i32;
-
-    match op {
-        1 => result = x + y,
-        2 => result = x - y,
-        3 => result = x * y,
-        4 => result = x / y,
-        _ => {
-            println!("Invalid selection");
-            return;
-        }
-    }
-
-    println!("The result is: {}", result);
-}
-
-fn input_parser() -> f64 {
-    let mut x: String = String::new();
-    io::stdin().read_line(&mut x).expect("Invalid Input");
-    let x: f64 = match x.trim().parse() {
-        Ok(num) => num,
-        Err(_) => {
-            return f64::NAN;
-        }
-    };
-
-    return x;
+    let contents = fs::read_to_string(filename)
+        .expect("Something went wrong reading the file");
+    println!("{}", contents);
 }
