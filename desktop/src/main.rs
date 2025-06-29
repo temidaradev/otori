@@ -41,7 +41,7 @@ fn main() {
     let mut rom = File::open(&args[1]).expect("Unable to open file");
     let mut buffer = Vec::new();
     rom.read_to_end(&mut buffer).unwrap();
-    chip8.load(&buffer);
+    let _ = chip8.load(&buffer);
 
     'gameloop: loop {
         for evt in event_pump.poll_iter() {
@@ -78,7 +78,10 @@ fn main() {
         }
 
         for _ in 0..TICKS_PER_FRAME {
-            chip8.tick();
+            if let Err(e) = chip8.tick() {
+                eprintln!("Emulator error: {}", e);
+                break 'gameloop;
+            }
         }
         chip8.timer_tick();
         draw_screen(&chip8, &mut canvas);
