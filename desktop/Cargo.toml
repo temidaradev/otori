@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-chip8_core = { path = "../chip8_core" }
-gameboy_core = { path = "../gameboy_core"}
-sdl2 = { version = "0.37", features = ["ttf"] }
+chip8_core = { workspace = true }
+gameboy_core = { workspace = true }
+sdl2 = { workspace = true }

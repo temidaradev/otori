@@ -2,3 +2,4 @@ desktop/target
 chip8_core/target
 gameboy_core/target
 .DS_Store
+target

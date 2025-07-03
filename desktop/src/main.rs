@@ -19,14 +19,14 @@ fn main() {
     let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
 
     let window = video_subsystem
-        .window("Otori", 400, 300)
+        .window("Otori", 800, 600)
         .position_centered()
         .build()
         .unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let font_path = "../assets/PublicPixel.ttf";
+    let font_path = "assets/PublicPixel.ttf";
     let font = ttf_context.load_font(font_path, 32).unwrap();
 
     let menu_items = ["Chip-8", "Exit"];
@@ -83,7 +83,7 @@ fn main() {
                     ..
                 } => match selected {
                     0 => {
-                        let rom_path = "../roms/PONG";
+                        let rom_path = "roms/PONG";
                         run_chip8_emulator(&sdl_context, &mut event_pump, rom_path);
                     }
                     1 => break 'menu,

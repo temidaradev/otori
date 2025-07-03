@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "chip8_core",
+    "gameboy_core",
+    "desktop",
+]
+resolver = "3"
+
+[workspace.dependencies]
+rand = "0.9.1"
+sdl2 = { version = "0.37", features = ["ttf"] }
+gameboy_core = { path = "gameboy_core"}
+chip8_core = { path = "chip8_core" }
