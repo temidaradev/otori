@@ -1,10 +1,10 @@
-pub struct ram {
+pub struct RAM {
     memory: [u8; 65536],
 }
 
-impl ram {
+impl RAM {
     pub fn new() -> Self {
-        ram { memory: [0; 65536] }
+        RAM { memory: [0; 65536] }
     }
 
     pub fn read(&self, address: u16) -> u8 {

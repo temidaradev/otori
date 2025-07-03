@@ -9,6 +9,7 @@ pub struct Registers {
     pub sp: u16, // Stack Pointer
     pub pc: u16, // Program Counter
 }
+
 impl Registers {
     pub fn new() -> Self {
         Registers {

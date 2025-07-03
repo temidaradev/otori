@@ -1,4 +1,4 @@
-pub mod cpu;
+pub mod CPU;
+pub mod RAM;
 pub mod instructions;
-pub mod ram;
 pub mod registers;
