@@ -7,7 +7,7 @@ use sdl2::rect::Rect;
 
 mod emulators {
     pub mod chip8;
-    pub mod gameboy;
+    pub mod nes;
 }
 
 use emulators::chip8::run_chip8_emulator;

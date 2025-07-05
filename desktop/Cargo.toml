@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 chip8_core = { workspace = true }
-gameboy_core = { workspace = true }
+nintendo_entertainment_system_core = { workspace = true }
 sdl2 = { workspace = true }

@@ -1,5 +1,5 @@
 desktop/target
 chip8_core/target
-gameboy_core/target
+nintendo_entertainment_system_core/target
 .DS_Store
 target
