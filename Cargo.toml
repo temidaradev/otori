@@ -1,7 +1,6 @@
 [workspace]
 members = [
     "chip8_core",
-    "nintendo_entertainment_system_core",
     "desktop",
 ]
 resolver = "3"
@@ -9,5 +8,4 @@ resolver = "3"
 [workspace.dependencies]
 rand = "0.9.1"
 sdl2 = { version = "0.37", features = ["ttf"] }
-nintendo_entertainment_system_core = { path = "nintendo_entertainment_system_core"}
 chip8_core = { path = "chip8_core" }
