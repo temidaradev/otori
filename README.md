@@ -18,7 +18,7 @@ Z X C V
 
 ## How to Use
 
-### You must have to instal Rust for desktop app.
+### You must install Rust for desktop app.
 
 On desktop app:
 
