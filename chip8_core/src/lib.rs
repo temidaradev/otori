@@ -69,6 +69,12 @@ impl fmt::Display for EmuError {
 
 impl std::error::Error for EmuError {}
 
+impl Default for Emu {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Emu {
     pub fn new() -> Self {
         let mut new_emu = Self {
@@ -147,30 +153,30 @@ impl Emu {
 
         match (digit1, digit2, digit3, digit4) {
             // NOP
-            (0, 0, 0, 0) => return Ok(()),
+            (0, 0, 0, 0) => Ok(()),
             // CLS
             (0, 0, 0xE, 0) => {
                 self.screen = [false; SCREEN_WIDTH * SCREEN_HEIGHT];
-                return Ok(());
+                Ok(())
             }
             // RET
             (0, 0, 0xE, 0xE) => {
                 let ret_addr = self.pop()?;
                 self.pc = ret_addr;
-                return Ok(());
+                Ok(())
             }
             // JMP NNN
             (1, _, _, _) => {
                 let nnn = op & 0xFFF;
                 self.pc = nnn;
-                return Ok(());
+                Ok(())
             }
             // CALL NNN
             (2, _, _, _) => {
                 let nnn = op & 0xFFF;
                 self.push(self.pc)?;
                 self.pc = nnn;
-                return Ok(());
+                Ok(())
             }
             // SKIP VX == NN
             (3, _, _, _) => {
@@ -179,7 +185,7 @@ impl Emu {
                 if self.v_reg[x] == nn {
                     self.pc += 2;
                 }
-                return Ok(());
+                Ok(())
             }
             // SKIP VX != NN
             (4, _, _, _) => {
@@ -188,7 +194,7 @@ impl Emu {
                 if self.v_reg[x] != nn {
                     self.pc += 2;
                 }
-                return Ok(());
+                Ok(())
             }
             // SKIP VX == VY
             (5, _, _, 0) => {
@@ -197,47 +203,47 @@ impl Emu {
                 if self.v_reg[x] == self.v_reg[y] {
                     self.pc += 2;
                 }
-                return Ok(());
+                Ok(())
             }
             // VX = NN
             (6, _, _, _) => {
                 let x = digit2 as usize;
                 let nn = (op & 0xFF) as u8;
                 self.v_reg[x] = nn;
-                return Ok(());
+                Ok(())
             }
             // VX += NN
             (7, _, _, _) => {
                 let x = digit2 as usize;
                 let nn = (op & 0xFF) as u8;
                 self.v_reg[x] = self.v_reg[x].wrapping_add(nn);
-                return Ok(());
+                Ok(())
             }
             // VX = VY
             (8, _, _, 0) => {
                 let x = digit2 as usize;
                 let y = digit3 as usize;
                 self.v_reg[x] = self.v_reg[y];
-                return Ok(());
+                Ok(())
             }
             // VX |= VY
             (8, _, _, 1) => {
                 let x = digit2 as usize;
                 let y = digit3 as usize;
                 self.v_reg[x] |= self.v_reg[y];
-                return Ok(());
+                Ok(())
             }
             (8, _, _, 2) => {
                 let x = digit2 as usize;
                 let y = digit3 as usize;
                 self.v_reg[x] &= self.v_reg[y];
-                return Ok(());
+                Ok(())
             }
             (8, _, _, 3) => {
                 let x = digit2 as usize;
                 let y = digit3 as usize;
                 self.v_reg[x] ^= self.v_reg[y];
-                return Ok(());
+                Ok(())
             }
             // VX += VY
             (8, _, _, 4) => {
@@ -247,7 +253,7 @@ impl Emu {
                 let new_vf = if carry { 1 } else { 0 };
                 self.v_reg[x] = new_vx;
                 self.v_reg[0xF] = new_vf;
-                return Ok(());
+                Ok(())
             }
             // VX -= VY
             (8, _, _, 5) => {
@@ -257,7 +263,7 @@ impl Emu {
                 let new_vf = if borrow { 0 } else { 1 };
                 self.v_reg[x] = new_vx;
                 self.v_reg[0xF] = new_vf;
-                return Ok(());
+                Ok(())
             }
             // VX >>= 1
             (8, _, _, 6) => {
@@ -265,7 +271,7 @@ impl Emu {
                 let lsb = self.v_reg[x] & 1;
                 self.v_reg[x] >>= 1;
                 self.v_reg[0xF] = lsb;
-                return Ok(());
+                Ok(())
             }
             // VX = VY - VX
             (8, _, _, 7) => {
@@ -275,7 +281,7 @@ impl Emu {
                 let new_vf = if borrow { 0 } else { 1 };
                 self.v_reg[x] = new_vx;
                 self.v_reg[0xF] = new_vf;
-                return Ok(());
+                Ok(())
             }
             // VX <<= 1
             (8, _, _, 0xE) => {
@@ -283,7 +289,7 @@ impl Emu {
                 let msb = (self.v_reg[x] >> 7) & 1;
                 self.v_reg[x] <<= 1;
                 self.v_reg[0xF] = msb;
-                return Ok(());
+                Ok(())
             }
             // SKIP VX != VY
             (9, _, _, 0) => {
@@ -292,19 +298,19 @@ impl Emu {
                 if self.v_reg[x] != self.v_reg[y] {
                     self.pc += 2;
                 }
-                return Ok(());
+                Ok(())
             }
             // I = NNN
             (0xA, _, _, _) => {
                 let nnn = op & 0xFFF;
                 self.i_reg = nnn;
-                return Ok(());
+                Ok(())
             }
             // JMP V0 + NNN
             (0xB, _, _, _) => {
                 let nnn = op & 0xFFF;
                 self.pc = (self.v_reg[0] as u16) + nnn;
-                return Ok(());
+                Ok(())
             }
             // VX = rand() & NN
             (0xC, _, _, _) => {
@@ -312,7 +318,7 @@ impl Emu {
                 let nn = (op & 0xFF) as u8;
                 let rng: u8 = random();
                 self.v_reg[x] = rng & nn;
-                return Ok(());
+                Ok(())
             }
             // DRAW
             (0xD, _, _, _) => {
@@ -324,7 +330,7 @@ impl Emu {
                 let mut flipped = false;
 
                 for y_line in 0..num_rows {
-                    let addr = self.i_reg + y_line as u16;
+                    let addr = self.i_reg + y_line;
                     let pixels = self.ram[addr as usize];
 
                     for x_line in 0..8 {
@@ -344,7 +350,7 @@ impl Emu {
                 } else {
                     self.v_reg[0xF] = 0;
                 }
-                return Ok(());
+                Ok(())
             }
             // SKIP KEY PRESS
             (0xE, _, 9, 0xE) => {
@@ -357,7 +363,7 @@ impl Emu {
                 if key {
                     self.pc += 2;
                 }
-                return Ok(());
+                Ok(())
             }
             // SKIP KEY RELEASE
             (0xE, _, 0xA, 1) => {
@@ -370,13 +376,13 @@ impl Emu {
                 if !key {
                     self.pc += 2;
                 }
-                return Ok(());
+                Ok(())
             }
             // VX = DT
             (0xF, _, 0, 7) => {
                 let x = digit2 as usize;
                 self.v_reg[x] = self.dt;
-                return Ok(());
+                Ok(())
             }
             // WAIT KEY
             (0xF, _, 0, 0xA) => {
@@ -393,33 +399,33 @@ impl Emu {
                     // Redo opcode
                     self.pc -= 2;
                 }
-                return Ok(());
+                Ok(())
             }
             // DT = VX
             (0xF, _, 1, 5) => {
                 let x = digit2 as usize;
                 self.dt = self.v_reg[x];
-                return Ok(());
+                Ok(())
             }
             // ST = VX
             (0xF, _, 1, 8) => {
                 let x = digit2 as usize;
                 self.st = self.v_reg[x];
-                return Ok(());
+                Ok(())
             }
             // I += VX
             (0xF, _, 1, 0xE) => {
                 let x = digit2 as usize;
                 let vx = self.v_reg[x] as u16;
                 self.i_reg = self.i_reg.wrapping_add(vx);
-                return Ok(());
+                Ok(())
             }
             // I = FONT
             (0xF, _, 2, 9) => {
                 let x = digit2 as usize;
                 let c = self.v_reg[x] as u16;
                 self.i_reg = c * 5;
-                return Ok(());
+                Ok(())
             }
             // BCD
             (0xF, _, 3, 3) => {
@@ -434,7 +440,7 @@ impl Emu {
                 self.ram[self.i_reg as usize] = hundreds;
                 self.ram[(self.i_reg + 1) as usize] = tens;
                 self.ram[(self.i_reg + 2) as usize] = ones;
-                return Ok(());
+                Ok(())
             }
             // STORE V0 - VX
             (0xF, _, 5, 5) => {
@@ -443,7 +449,7 @@ impl Emu {
                 for idx in 0..=x {
                     self.ram[i + idx] = self.v_reg[idx];
                 }
-                return Ok(());
+                Ok(())
             }
             // LOAD V0 - VX
             (0xF, _, 6, 5) => {
@@ -452,9 +458,9 @@ impl Emu {
                 for idx in 0..=x {
                     self.v_reg[idx] = self.ram[i + idx];
                 }
-                return Ok(());
+                Ok(())
             }
-            (_, _, _, _) => return Err(EmuError::UnimplementedOpcode(op)),
+            (_, _, _, _) => Err(EmuError::UnimplementedOpcode(op)),
         }
     }
 

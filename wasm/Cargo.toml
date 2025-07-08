@@ -1,0 +1,13 @@
+[package]
+name = "wasm"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+chip8_core = { workspace = true }
+wasm-bindgen = { workspace = true}
+web-sys = { workspace = true }
+js-sys = { workspace = true }
