@@ -62,7 +62,7 @@ async function run() {
     startBtn.addEventListener("click", async function() {
         if (!romSelect) return;
         const romName = romSelect.value;
-        const romResponse = await fetch(`./roms/${romName}`);
+        const romResponse = await fetch(`roms/${romName}`);
         const romData = new Uint8Array(await romResponse.arrayBuffer());
         chip8 = new wasm.EmuWasm();
         chip8.load_game(romData);
